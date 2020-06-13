@@ -6,7 +6,6 @@ import FormData from "./FormBuilder/FormData";
 
 
 export default function ReactHook() {
-
   return (
     <Container maxWidth="sm" component={Paper} style={{textAlign:"center"}}>
     <h1>React Hook with Yup</h1>
