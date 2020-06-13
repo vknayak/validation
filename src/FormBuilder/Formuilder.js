@@ -17,19 +17,25 @@ import {
   Switch,
   Typography
 } from "@material-ui/core";
-
+import * as yup from "yup";
 import Grid from "@material-ui/core/Grid";
 import DateFnsUtils from "@date-io/date-fns";
 import "date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker
-} from "@material-ui/pickers";
+import { MuiPickersUtilsProvider,KeyboardDatePicker} from "@material-ui/pickers";
 
 export default function ForBuilderr({ list }) {
 
+  var dictii= yup.object().shape({})
+// console.log(list[0].validation,"llll")
+  function dictUpdate(value,index) {
+    // console.log(value.validation,"name")
+    dictii.fields[value.name] = value.validation;
+    dictii._nodes.push(value.name);
+    // console.log(dictii,"inside  nodes")
+    return null;
+  }
   const { register, handleSubmit, errors, control, getValues, setValue } = useForm({
-    validationSchema: list[0].validation,
+    validationSchema: dictii,
     mode: "onBlur",
     submitFocusError: false,
     defaultValues: {
@@ -37,9 +43,11 @@ export default function ForBuilderr({ list }) {
     }
   });
   const onSubmit = (values) => {
+    
+    // console.log(dictii, "Pralhad")
     alert(JSON.stringify(values, null, 2));
   }
-
+  
   // console.log(formState.touched,"lllllllllll")
   // const values = getValues();
   // console.log(values, "lllllllllll")
@@ -48,39 +56,36 @@ export default function ForBuilderr({ list }) {
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         {list.map(e => e.type === "text" ?
-
           <section key={e.name} style={{ marginTop: "20px" }}>
-            {console.log(e.customProps.variant, "variant")}
+           {dictUpdate(e)}
             <TextField
-              variant={e.customProps.variant ? e.customProps.variant : "standard"}
-              placeholder={e.customProps.placeholder ? e.customProps.placeholder : ""}
-              label={e.customProps.label ? e.customProps.label : ""}
+              {...e.customProps}
               error={errors[e.name] ? true : false}
               name={e.name}
               inputRef={register}
               helperText={errors[e.name] && errors[e.name].message}
-            />
-            {console.log({ ...e.customProps }, "cusssss")}
-
-          </section> :
-
-          e.type === "select" ?
+              
+              />
+              
+              
+              </section> :
+              
+              e.type === "select" ?
             <section key={e.name} style={{ marginTop: "20px" }}>
+            {dictUpdate(e)}
               <FormControl
                 error={Boolean(errors[e.name])}
                 variant={e.customProps.variant ? e.customProps.variant : "standard"}
               >
-                <InputLabel id={e.customProps.id ? e.customProps.id : ""}>{e.customProps.label ? e.customProps.label : ""}</InputLabel>
+                <InputLabel>{e.customProps.label ? e.customProps.label : ""}</InputLabel>
                 <Controller
                   as={
                     <Select
-                      id={e.customProps.id ? e.customProps.id : ""}
-                      label={e.customProps.label ? e.customProps.label : ""}
-                      style={{ minWidth: 222 }}
+                    {...e.customProps}
+                      style={{ minWidth: 222 ,textAlign:"left"}}
                     >
-
                       {e.options.map((option) =>
-                        <MenuItem value={option}>
+                        <MenuItem value={option} >
                           {option}
                         </MenuItem>
                       )}
@@ -97,22 +102,22 @@ export default function ForBuilderr({ list }) {
 
             : e.type === "date" ?
               <section>
-
+              {dictUpdate(e)}
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <Grid container justify="space-around">
+                  <Grid container justify="space-around" style={{marginTop:"20px"}}>
                     <FormControl
-                      error={Boolean(errors[e.name])}
-                      variant={e.customProps.variant ? e.customProps.variant : "standard"}
+                      error={Boolean(errors[e.name])}                      
                     >
                       <Controller
 
                         as={<KeyboardDatePicker
-                              variant="dialog"
-                              label={e.customProps.label ? e.customProps.label : ""}
+                              style={{ width: 222 ,textAlign:"left"}}
+                              {...e.customProps}
                         />}
                         name={e.name}
                         control={control}
                         format="MM/dd/yyyy"
+                        
                       />
                     </FormControl>
                   </Grid>
@@ -125,18 +130,19 @@ export default function ForBuilderr({ list }) {
 
 
                 <FormControl component="fieldset" error={Boolean(errors[e.name])} style={{ marginTop: "20px" }}>
-                  <FormLabel component="legend" >Gender</FormLabel>
+                  <FormLabel component="legend" style={{textAlign:"left"}}>Gender</FormLabel>
+                  {dictUpdate(e)}
                   <Controller
                     as={
                       <RadioGroup aria-label="gender">
-                        {e.value.map((radiovalue, index) =>
-                          <FormControlLabel
-                            value={radiovalue[index]}
-                            control={<Radio />}
-                            label={radiovalue[index]}
-                            labelPlacement="end"
-                          />
-                        )}
+                      {e.value.map((radiovalue, index) =>
+                        <FormControlLabel
+                          value={radiovalue[index]}
+                          control={<Radio />}
+                          label={radiovalue[index]}
+                          labelPlacement="end"
+                        />
+                      )}
                       </RadioGroup>
                     }
                     name={e.name}
@@ -151,9 +157,10 @@ export default function ForBuilderr({ list }) {
 
                 e.type === "checkbox" ?
                   <div>
+                  {dictUpdate(e)}
                     <FormControl error={Boolean(errors[e.name])} >
 
-                      <FormLabel component="legend" style={{ marginTop: "10px" }}>Hobbies</FormLabel>
+                      <FormLabel component="legend" style={{ marginTop: "10px",textAlign:"left" }}>Hobbies</FormLabel>
 
                       <FormGroup >
                         {e.HObbies.map((boat, i) => {
@@ -181,28 +188,25 @@ export default function ForBuilderr({ list }) {
                   :
                   e.type === "slider" ?
 
-
+                  
                     <FormControl style={{ width: "200px" }} error={Boolean(errors[e.name])}>
-
+                    {dictUpdate(e)}
                       <FormLabel><Typography id="discrete-slider" gutterBottom>{e.name}</Typography></FormLabel>
                       <Controller
                         name={e.name}
                         control={control}
-                        defaultValue={e.customProps.defaultValue ? e.customProps.defaultValue : 0}
+                        defaultValue={e.defaultValue ? e.defaultValue : 0}
                         onChange={([, value]) => value}
-                        as={<Slider
-                        valueLabelDisplay="auto" 
-                        min={e.customProps.min && typeof(e.customProps.min ) === "number"  ? e.customProps.min : 0} 
-                        max={e.customProps.max && typeof(e.customProps.max ) ? e.customProps.max : 0} 
-                        step={e.customProps.step && typeof(e.customProps.step ) ? e.customProps.step : 1} />}
+                        as={<Slider {...e.customProps} />}
                       />
                     </FormControl>
                     :
                     e.type === "switch" ?
                       <section name="switch">
+                      {dictUpdate(e)}
                         <FormControl error={Boolean(errors[e.name])}>
 
-
+                        
                           <Controller
                             as={<FormControlLabel
                               control={<Switch name="gilad" />}
@@ -236,6 +240,7 @@ export default function ForBuilderr({ list }) {
   )
 
 }
+
 
 export const FormCheckBox = ({
   name,
