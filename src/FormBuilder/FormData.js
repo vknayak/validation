@@ -6,8 +6,7 @@ const data = [
       "name": "firstName",
       "type": "text",
       "validation":yup.string().required('Required').max(15, 'Must be 15 characters or less'),
-      "customProps":{variant:"outlined",id:"",defaultValue:"",placeholder:"kumar",label:"First Name"}
-
+      "customProps":{variant:"outlined",id:"",defaultValue:"",placeholder:"kumar",label:"First Name",type:""}
     },
     {
       "name": "email",
@@ -35,9 +34,10 @@ const data = [
     },
     {
       name:"Gender",
-      value:[{0:"male"},{1:"female"}],
-      "validation":yup.string().oneOf(["male","female"],"please select gender").required("required"),
-      type:"radio"
+      customProps:[{"value":"zero","label":"male"},{"label":"female","value":"one"}],
+      "validation":yup.string().required("required"),
+      type:"radio",
+      labelText:"Gender"
     },
     {
       name:"Hobbies",
@@ -50,6 +50,7 @@ const data = [
       .min(2, "please select two options")
       .required('required'),
       type:"checkbox",
+      labelText:"Hobbies"
     },
     {
       name:"Age",

@@ -1,7 +1,7 @@
 import React from "react";
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import FormBuilder from "./FormBuilder/Formuilder";
+import FormBuilder from "./FormBuilder/FormBuilder";
 import FormData from "./FormBuilder/FormData";
 
 
